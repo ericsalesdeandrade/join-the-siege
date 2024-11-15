@@ -1,4 +1,3 @@
-from pypdf import PdfReader
 from PIL import Image
 import pytesseract
 from werkzeug.datastructures import FileStorage
@@ -40,6 +39,7 @@ def classify_document(file):
     invoice_pattern = re.compile(r"invoice", re.IGNORECASE)
     license_pattern = re.compile(r"\blicen[cs]e\b", re.IGNORECASE)
     bank_statement_pattern = re.compile(r"account number", re.IGNORECASE)
+    
     if invoice_pattern.search(text):
         return "invoice"
     elif license_pattern.search(text):
