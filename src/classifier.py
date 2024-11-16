@@ -7,8 +7,9 @@ def classify_document(file, model, vectorizer):
     try:
         file.save(temp_path)
         text = extract_text_with_fallback(temp_path)
-        # preprocessed_text = preprocess_text(text)
-        text_tfidf = vectorizer.transform([text])
+        preprocessed_text = preprocess_text(text)
+        print(f"Preprocessed Text: {preprocessed_text}")
+        text_tfidf = vectorizer.transform([preprocessed_text])
         probabilities = model.predict_proba(text_tfidf)[0]
         probabilities_results = dict(zip(model.classes_, probabilities))
         predicted_label = model.classes_[probabilities.argmax()]

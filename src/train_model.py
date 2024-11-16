@@ -38,7 +38,7 @@ X_val, X_test, y_val, y_test = train_test_split(
 )
 
 # Step 4: Feature extraction using TF-IDF
-vectorizer = TfidfVectorizer(max_features=10000, ngram_range=(1, 3), token_pattern=r"\b\w+\b")
+vectorizer = TfidfVectorizer(max_features=10000, ngram_range=(1, 3))
 X_train_tfidf = vectorizer.fit_transform(X_train)
 X_val_tfidf = vectorizer.transform(X_val)
 X_test_tfidf = vectorizer.transform(X_test)

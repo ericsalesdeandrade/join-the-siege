@@ -30,9 +30,6 @@ def extract_text_with_fallback(file_path):
         return ""
 
 def preprocess_text(text):
-    """
-    Preprocess the extracted text.
-    """
-    text = re.sub(r"[^a-zA-Z\s]", "", text)
-    text = re.sub(r"\s+", " ", text).strip()
-    return text.lower()
+    # Remove excessive whitespace
+    text = re.sub(r"\s+", " ", text)
+    return text.lower().strip()
