@@ -52,7 +52,7 @@ def test_successful_classification(client):
     Test the /classify_file endpoint using real test files from the ./files directory.
     """
     # Directory containing test files
-    test_dir = "./files"
+    test_dir = "./test_data/"
 
     expected_results = {
         "invoice_1.pdf": "invoices",
