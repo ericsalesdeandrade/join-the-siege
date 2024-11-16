@@ -52,31 +52,34 @@ joblib.dump(model, "text_classifier.pkl")
 joblib.dump(vectorizer, "tfidf_vectorizer.pkl")
 print("Model and vectorizer saved as 'text_classifier.pkl' and 'tfidf_vectorizer.pkl'")
 
-# Step 6: Evaluate the classifier
-print("\nValidation Set Results:")
-y_val_pred = model.predict(X_val_tfidf)
-print(classification_report(y_val, y_val_pred))
 
-print("\nTest Set Results:")
-y_test_pred = model.predict(X_test_tfidf)
-print(classification_report(y_test, y_test_pred))
+if __name__ == '__main__':
 
-# Step 7: Test with New Data
-test_cases = [
-    "Invoice Number: 12345 for electronics purchase, total $500.",
-    "Account Statement: Savings Account XXXX-1234. Balance: $10,000.",
-    "Driver's License: Name: John Doe, License No: D12345678.",
-]
+    # Example:
+    print("\nValidation Set Results:")
+    y_val_pred = model.predict(X_val_tfidf)
+    print(classification_report(y_val, y_val_pred))
 
-print("\nTesting Classifier on New Inputs\n" + "-" * 40)
-for i, text in enumerate(test_cases, start=1):
-    preprocessed_text = preprocess_text(text)
-    text_tfidf = vectorizer.transform([preprocessed_text])
-    probabilities = model.predict_proba(text_tfidf)[0]
-    predicted_label = model.classes_[probabilities.argmax()]
-    print(f"Test Case {i}: {text}")
-    print(f"Predicted Category: {predicted_label}")
-    print("Probabilities:")
-    for label, prob in zip(model.classes_, probabilities):
-        print(f"  {label}: {prob:.2f}")
-    print("-" * 40)
+    print("\nTest Set Results:")
+    y_test_pred = model.predict(X_test_tfidf)
+    print(classification_report(y_test, y_test_pred))
+
+    # Example test cases
+    test_cases = [
+        "Invoice Number: 12345 for electronics purchase, total $500.",
+        "Account Statement: Savings Account XXXX-1234. Balance: $10,000.",
+        "Driver's License: Name: John Doe, License No: D12345678.",
+    ]
+    print("\nTesting Classifier on New Inputs\n" + "-" * 40)
+    for i, text in enumerate(test_cases, start=1):
+        preprocessed_text = preprocess_text(text)
+        new_text_tfidf = vectorizer.transform([preprocessed_text])
+        probabilities = model.predict_proba(new_text_tfidf)[0]
+        predicted_label = model.classes_[probabilities.argmax()]
+        print(f"Test Case {i}: {text}")
+        print(f"Predicted Category: {predicted_label}")
+        print("Probabilities:")
+        for label, prob in zip(model.classes_, probabilities):
+            print(f"  {label}: {prob:.2f}")
+        print("-" * 40)
+
