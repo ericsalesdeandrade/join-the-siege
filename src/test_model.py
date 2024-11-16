@@ -1,9 +1,9 @@
 import joblib
-from ml_classifier import preprocess_text
+from train_model import preprocess_text
 
 # Load trained model and vectorizer
-model = joblib.load("text_classifier.pkl")
-vectorizer = joblib.load("tfidf_vectorizer.pkl")
+model = joblib.load("./src/models/text_classifier.pkl")
+vectorizer = joblib.load("./src/models/tfidf_vectorizer.pkl")
 
 # Test cases (old + new combined)
 test_cases = [

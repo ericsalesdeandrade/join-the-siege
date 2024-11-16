@@ -68,7 +68,6 @@ def test_successful_classification(client):
     for filename, expected_class in expected_results.items():
         file_path = os.path.join(test_dir, filename)
         with open(file_path, "rb") as file_data:
-            # Send a POST request to the /classify_file endpoint
             data = {'file': (BytesIO(file_data.read()), filename)}
             response = client.post('/classify_file', data=data, content_type='multipart/form-data')
 
