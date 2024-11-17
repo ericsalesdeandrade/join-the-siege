@@ -159,6 +159,14 @@ While the project demonstrates a functional document classification pipeline, th
 
 ---
 
+### **5. Database for Metadata**
+- **Missing Database Integration**: The project does not store metadata or logs in a database for auditing, tracking, or analysis.
+- **Recommended Actions**:
+  - Integrate a **database** (e.g., SQLite, PostgreSQL) to store:
+    - Uploaded file metadata (e.g., name, size, type).
+    - Classification results.
+    - Logs for auditing and debugging.
+  - Use an ORM (Object-Relational Mapping) library like **SQLAlchemy** to interact with the database.
 
 ## **Appendix**
 
