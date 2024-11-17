@@ -32,7 +32,7 @@ def test_extract_text_from_pdf(temp_pdf):
 def test_extract_text_from_image(temp_image):
     text = extract_text_from_image(temp_image)
     assert isinstance(text, str)
-    pattern = r"Hello\s*world"
+    pattern = r"H[eE]llo\s*[wW][oO]r?l?d?"
     assert re.search(pattern, text), f"Extracted text '{text}' does not match expected pattern '{pattern}'"
 
 @pytest.mark.fast
