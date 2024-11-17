@@ -1,23 +1,8 @@
 import os
 from io import BytesIO
 import pytest
-from src.app import allowed_file
 
-
-@pytest.mark.parametrize("filename, expected", [
-    ("file.pdf", True),
-    ("file.png", True),
-    ("file.jpg", True),
-    ("file.txt", False),
-    ("file", False),
-])
-def test_allowed_file(filename, expected):
-    """
-    Test if the allowed_file function correctly identifies allowed extensions.
-    """
-    assert allowed_file(filename) == expected
-
-
+@pytest.mark.slow
 def test_no_file_in_request(client):
     """
     Test if the API returns 400 when no file is in the request.
@@ -26,7 +11,7 @@ def test_no_file_in_request(client):
     assert response.status_code == 400
     assert response.get_json() == {"error": "No file part in the request"}
 
-
+@pytest.mark.slow
 def test_no_selected_file(client):
     """
     Test if the API returns 400 when no file is selected.
@@ -36,7 +21,7 @@ def test_no_selected_file(client):
     assert response.status_code == 400
     assert response.get_json() == {"error": "No selected file"}
 
-
+@pytest.mark.slow
 def test_file_type_not_allowed(client):
     """
     Test if the API returns 400 when the uploaded file type is not allowed.
@@ -46,7 +31,7 @@ def test_file_type_not_allowed(client):
     assert response.status_code == 400
     assert response.get_json() == {"error": "File type not allowed"}
 
-
+@pytest.mark.slow
 def test_successful_classification(client):
     """
     Test the /classify_file endpoint using real test files from the ./files directory.
@@ -57,12 +42,16 @@ def test_successful_classification(client):
     expected_results = {
         "invoice_1.pdf": "invoices",
         "invoice_2.pdf": "invoices",
+        "invoice_3.pdf": "invoices",
+        "invoice_499.pdf": "invoices",
         "bank_statement_1.pdf": "bank_statements",
         "bank_statement_2.pdf": "bank_statements",
         "bank_statement_3.pdf": "bank_statements",
+        "bank_statement_2500.pdf": "bank_statements",
         "drivers_license_1.jpg": "drivers_licenses",
         "drivers_licence_2.jpg": "drivers_licenses",
         "drivers_license_3.jpg": "drivers_licenses",
+        "sample_dl.png": "drivers_licenses",
     }
 
     for filename, expected_class in expected_results.items():

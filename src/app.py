@@ -5,7 +5,6 @@ from src.file_io import allowed_file
 
 app = Flask(__name__)
 
-# Load pre-trained model and vectorizer at startup
 print("Loading model and vectorizer...")
 model = joblib.load("./src/models/text_classifier.pkl")
 vectorizer = joblib.load("./src/models/tfidf_vectorizer.pkl")
@@ -23,7 +22,6 @@ def classify_file_route():
     if not allowed_file(file.filename):
         return jsonify({"error": "File type not allowed"}), 400
 
-    # Pass the file to classifier logic
     file_class = classify_document(file, model, vectorizer)
     return jsonify({"file_class": file_class}), 200
 

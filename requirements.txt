@@ -16,5 +16,7 @@ pillow==11.0.0
 requests==2.32.3
 beautifulsoup4==4.12.3
 faker==33.0.0
-nltk==3.9.1
-matplotlib==3.9.2
+python-docx 
+openpyxl==3.1.5
+pillow==11.0.0
+pymupdf==1.24.13
