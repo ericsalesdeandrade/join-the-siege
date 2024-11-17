@@ -5,11 +5,9 @@ import random
 from docx import Document
 import pandas as pd
 
-# Initialize Faker for random data generation
 faker = Faker()
 
-# Font setup
-FONT_PATH = "/System/Library/Fonts/Supplemental/Arial.ttf"  # Update if necessary
+FONT_PATH = "/System/Library/Fonts/Supplemental/Arial.ttf" 
 FONT_SIZE = 14
 
 try:
@@ -18,10 +16,9 @@ except OSError:
     print("Custom font not found. Using default font.")
     font = ImageFont.load_default()
 
-# General configurations
-TEMPLATE_SIZE = (800, 600)  # Width x Height for invoices
-BACKGROUND_COLOR = (255, 255, 255)  # White
-TEXT_COLOR = (0, 0, 0)  # Black
+TEMPLATE_SIZE = (800, 600)  
+BACKGROUND_COLOR = (255, 255, 255)  
+TEXT_COLOR = (0, 0, 0)  
 
 
 def generate_unique_filename(output_dir, base_name, extension):
@@ -59,7 +56,7 @@ def calculate_invoice_totals(items):
     Calculate subtotals, tax, and grand total.
     """
     subtotal = sum(item["Total"] for item in items)
-    tax = round(subtotal * 0.1, 2)  # Assuming 10% tax
+    tax = round(subtotal * 0.1, 2)  
     total = round(subtotal + tax, 2)
     return subtotal, tax, total
 
@@ -72,14 +69,12 @@ def generate_invoice_as_pdf(output_dir, invoice_data):
     image = Image.new("RGB", TEMPLATE_SIZE, color=BACKGROUND_COLOR)
     draw = ImageDraw.Draw(image)
 
-    # Header info
     draw.text((20, 20), f"Invoice Number: {invoice_data['Invoice Number']}", fill=TEXT_COLOR, font=font)
     draw.text((20, 50), f"Date: {invoice_data['Date']}", fill=TEXT_COLOR, font=font)
     draw.text((20, 80), f"Company: {invoice_data['Company']}", fill=TEXT_COLOR, font=font)
     draw.text((20, 110), f"Customer: {invoice_data['Customer']}", fill=TEXT_COLOR, font=font)
     draw.text((20, 140), f"Address: {invoice_data['Address']}", fill=TEXT_COLOR, font=font)
 
-    # Items
     y_offset = 180
     draw.text((20, y_offset), "Description | Quantity | Unit Price | Total", fill=TEXT_COLOR, font=font)
     y_offset += 20
@@ -87,7 +82,6 @@ def generate_invoice_as_pdf(output_dir, invoice_data):
         draw.text((20, y_offset), f"{item['Description']} | {item['Quantity']} | ${item['Unit Price']:.2f} | ${item['Total']:.2f}", fill=TEXT_COLOR, font=font)
         y_offset += 20
 
-    # Totals
     draw.text((20, y_offset + 20), f"Subtotal: ${invoice_data['Subtotal']:.2f}", fill=TEXT_COLOR, font=font)
     draw.text((20, y_offset + 40), f"Tax (10%): ${invoice_data['Tax']:.2f}", fill=TEXT_COLOR, font=font)
     draw.text((20, y_offset + 60), f"Total: ${invoice_data['Total']:.2f}", fill=TEXT_COLOR, font=font)
@@ -105,14 +99,12 @@ def generate_invoice_as_docx(output_dir, invoice_data):
     doc = Document()
     doc.add_heading("Invoice", level=1)
 
-    # Header info
     doc.add_paragraph(f"Invoice Number: {invoice_data['Invoice Number']}")
     doc.add_paragraph(f"Date: {invoice_data['Date']}")
     doc.add_paragraph(f"Company: {invoice_data['Company']}")
     doc.add_paragraph(f"Customer: {invoice_data['Customer']}")
     doc.add_paragraph(f"Address: {invoice_data['Address']}")
 
-    # Items table
     table = doc.add_table(rows=1, cols=4)
     table.style = "Table Grid"
     hdr_cells = table.rows[0].cells
@@ -127,7 +119,6 @@ def generate_invoice_as_docx(output_dir, invoice_data):
         row_cells[2].text = f"${item['Unit Price']:.2f}"
         row_cells[3].text = f"${item['Total']:.2f}"
 
-    # Totals
     doc.add_paragraph(f"Subtotal: ${invoice_data['Subtotal']:.2f}")
     doc.add_paragraph(f"Tax (10%): ${invoice_data['Tax']:.2f}")
     doc.add_paragraph(f"Total: ${invoice_data['Total']:.2f}")

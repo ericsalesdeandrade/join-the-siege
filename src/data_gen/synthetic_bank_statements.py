@@ -5,10 +5,8 @@ from PIL import Image, ImageDraw, ImageFont
 from docx import Document
 import pandas as pd
 
-# Initialize Faker for random data generation
 faker = Faker()
 
-# Font setup for images
 FONT_PATH = "/System/Library/Fonts/Supplemental/Arial.ttf"
 FONT_SIZE = 14
 
@@ -18,10 +16,9 @@ except OSError:
     print("Custom font not found. Using default font.")
     font = ImageFont.load_default()
 
-# General configurations
-TEMPLATE_SIZE = (800, 600)  # For PDFs
-BACKGROUND_COLOR = (255, 255, 255)  # White
-TEXT_COLOR = (0, 0, 0)  # Black
+TEMPLATE_SIZE = (800, 600)  
+BACKGROUND_COLOR = (255, 255, 255)  
+TEXT_COLOR = (0, 0, 0)  
 
 
 def generate_unique_filename(output_dir, base_name, extension):
@@ -62,14 +59,12 @@ def generate_bank_statement_as_pdf(output_dir, transactions):
     image = Image.new("RGB", TEMPLATE_SIZE, color=BACKGROUND_COLOR)
     draw = ImageDraw.Draw(image)
 
-    # Header info
     draw.text((20, 20), f"Bank Name: Bank of {faker.city()}", fill=TEXT_COLOR, font=font)
     draw.text((20, 50), f"Account Holder: {faker.name()}", fill=TEXT_COLOR, font=font)
     draw.text((20, 80), f"Account Number: XXXX-XXXX-XXXX-{random.randint(1000, 9999)}", fill=TEXT_COLOR, font=font)
     draw.text((20, 110), f"Statement Period: {faker.date_this_month().strftime('%B %Y')}", fill=TEXT_COLOR, font=font)
     draw.text((20, 150), "Date | Description | Debit ($) | Credit ($)", fill=TEXT_COLOR, font=font)
 
-    # Transactions
     y_offset = 180
     for transaction in transactions:
         transaction_line = f"{transaction['Date']} | {transaction['Description'][:20]} | {transaction['Debit ($)']} | {transaction['Credit ($)']}"
@@ -89,14 +84,12 @@ def generate_bank_statement_as_docx(output_dir, transactions):
     doc = Document()
     doc.add_heading("Bank Statement", level=1)
 
-    # Header info
     doc.add_paragraph(f"Bank Name: Bank of {faker.city()}")
     doc.add_paragraph(f"Account Holder: {faker.name()}")
     doc.add_paragraph(f"Account Number: XXXX-XXXX-XXXX-{random.randint(1000, 9999)}")
     doc.add_paragraph(f"Statement Period: {faker.date_this_month().strftime('%B %Y')}")
     doc.add_paragraph("Date | Description | Debit ($) | Credit ($)")
 
-    # Transactions
     for transaction in transactions:
         transaction_line = f"{transaction['Date']} | {transaction['Description']} | Debit: {transaction['Debit ($)']} | Credit: {transaction['Credit ($)']}"
         doc.add_paragraph(transaction_line)
