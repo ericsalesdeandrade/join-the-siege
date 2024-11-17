@@ -45,7 +45,6 @@ def test_successful_classification(client):
     """
     Test the /classify_file endpoint using real test files from the ./files directory.
     """
-    # Directory containing test files
     test_dir = "./test_data/"
 
     expected_results = {
@@ -71,7 +70,6 @@ def test_successful_classification(client):
                 "/classify_file", data=data, content_type="multipart/form-data"
             )
 
-        # Assertions
         assert response.status_code == 200
         assert response.get_json() == {
             "file_class": expected_class

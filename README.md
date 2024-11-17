@@ -4,6 +4,8 @@
 
 This project is a document classification system designed to identify and categorize documents into pre-defined categories. The classifier supports **Invoices**, **Bank Statements**, and **Driver's Licenses**. It leverages a basic Logistic Regression machine learning model and a Flask-based REST API to handle file uploads, extract text, and classify documents.
 
+Video Demo: [Document Classifier Demo](https://www.loom.com/share/84253f43e4a44a34816eb1147d0681df?sid=182a5fd5-f628-4b0b-b8c4-b6ff44ace120)
+
 ### **Architecture**
 
 -   **Flask API**: Provides endpoints to classify uploaded files.
