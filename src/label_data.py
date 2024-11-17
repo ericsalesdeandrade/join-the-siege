@@ -1,29 +1,13 @@
 import json
-import logging
 import os
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 
 from src.file_io import (allowed_file, extract_text_with_fallback,
                          preprocess_text)
+from src.logging_config import setup_logger
 
-log_dir = "./logs"
-os.makedirs(log_dir, exist_ok=True)
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-
-file_handler = logging.FileHandler(os.path.join(log_dir, "label_data.log"))
-file_handler.setFormatter(
-    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-)
-logger.addHandler(file_handler)
-
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(
-    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-)
-logger.addHandler(console_handler)
+logger = setup_logger("label_data", "./logs/label_data.log")
 
 
 def process_file(file_path, label):

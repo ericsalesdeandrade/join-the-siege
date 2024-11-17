@@ -1,7 +1,7 @@
 import fitz
+import pandas as pd
 import pytest
 from docx import Document
-import pandas as pd
 from PIL import Image, ImageDraw
 
 

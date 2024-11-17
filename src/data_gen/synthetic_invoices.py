@@ -1,21 +1,25 @@
 import os
 import random
+from typing import Union
 
 import pandas as pd
 from docx import Document
 from faker import Faker
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
+from PIL.ImageFont import FreeTypeFont, ImageFont, load_default, truetype
 
 faker = Faker()
 
 FONT_PATH = "/System/Library/Fonts/Supplemental/Arial.ttf"
 FONT_SIZE = 14
 
+font: Union[FreeTypeFont, ImageFont]
+
 try:
-    font = ImageFont.truetype(FONT_PATH, FONT_SIZE)
+    font = truetype(FONT_PATH, FONT_SIZE)
 except OSError:
     print("Custom font not found. Using default font.")
-    font = ImageFont.load_default()
+    font = load_default()
 
 TEMPLATE_SIZE = (800, 600)
 BACKGROUND_COLOR = (255, 255, 255)

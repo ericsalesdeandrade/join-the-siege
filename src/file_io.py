@@ -1,30 +1,15 @@
-import logging
-import os
 import re
 
-import fitz  # PyMuPDF
+import fitz
 import pandas as pd
 import pytesseract
 from docx import Document
 from PIL import Image
 
-log_dir = "./logs"
-os.makedirs(log_dir, exist_ok=True)
+from src.logging_config import setup_logger
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger = setup_logger("file_io", "./logs/file_io.log")
 
-file_handler = logging.FileHandler(os.path.join(log_dir, "file_io.log"))
-file_handler.setFormatter(
-    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-)
-logger.addHandler(file_handler)
-
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(
-    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-)
-logger.addHandler(console_handler)
 
 ALLOWED_EXTENSIONS = {"pdf", "png", "jpg", "docx", "xlsx"}
 

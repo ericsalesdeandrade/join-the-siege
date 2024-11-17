@@ -1,27 +1,11 @@
-import logging
-import os
+
 
 import joblib
 
-from train_model import preprocess_text
+from src.logging_config import setup_logger
+from src.train_model import preprocess_text
 
-log_dir = "./logs"
-os.makedirs(log_dir, exist_ok=True)
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-
-file_handler = logging.FileHandler(os.path.join(log_dir, "test_model.log"))
-file_handler.setFormatter(
-    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-)
-logger.addHandler(file_handler)
-
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(
-    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-)
-logger.addHandler(console_handler)
+logger = setup_logger("test_model", "./logs/test_model.log")
 
 try:
     model_path = "./src/models/text_classifier.pkl"

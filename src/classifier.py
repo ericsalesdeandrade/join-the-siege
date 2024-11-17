@@ -1,28 +1,9 @@
-import logging
 import os
 
 from src.file_io import extract_text_with_fallback, preprocess_text
+from src.logging_config import setup_logger
 
-log_dir = "./logs"
-os.makedirs(log_dir, exist_ok=True)
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-
-file_handler = logging.FileHandler(os.path.join(log_dir, "classifier.log"))
-file_handler.setFormatter(
-    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-)
-logger.addHandler(file_handler)
-
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(
-    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-)
-logger.addHandler(console_handler)
-
-# Example usage
-logger.info("Classifier module started.")
+logger = setup_logger("classifier", "./logs/classifier.log")
 
 
 def classify_document(file, model, vectorizer):

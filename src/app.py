@@ -1,34 +1,23 @@
 import logging
-import os
 
 import joblib
 from flask import Flask, jsonify, request
 
 from src.classifier import classify_document
 from src.file_io import allowed_file
+from src.logging_config import setup_logger
 
-log_dir = "./logs"
-os.makedirs(log_dir, exist_ok=True)
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-
-file_handler = logging.FileHandler(os.path.join(log_dir, "app.log"))
-file_handler.setFormatter(
-    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-)
-logger.addHandler(file_handler)
-
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(
-    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-)
-logger.addHandler(console_handler)
+# Setup main app logger
+logger = setup_logger("app", "./logs/app.log")
 
 flask_logger = logging.getLogger("werkzeug")
 flask_logger.setLevel(logging.DEBUG)
-flask_logger.addHandler(file_handler)
 
+flask_file_handler = logging.FileHandler("./logs/flask.log")
+flask_file_handler.setFormatter(
+    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+)
+flask_logger.addHandler(flask_file_handler)
 
 app = Flask(__name__)
 

@@ -1,6 +1,4 @@
 import json
-import logging
-import os
 import re
 from collections import Counter
 
@@ -10,23 +8,9 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 
-log_dir = "./logs"
-os.makedirs(log_dir, exist_ok=True)
+from src.logging_config import setup_logger
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-
-file_handler = logging.FileHandler(os.path.join(log_dir, "train_model.log"))
-file_handler.setFormatter(
-    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-)
-logger.addHandler(file_handler)
-
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(
-    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-)
-logger.addHandler(console_handler)
+logger = setup_logger("train_model", "./logs/train_model.log")
 
 
 def load_dataset(file_path):

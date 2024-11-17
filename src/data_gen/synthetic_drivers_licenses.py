@@ -1,8 +1,10 @@
 import os
 import random
+from typing import Union
 
 from faker import Faker
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
+from PIL.ImageFont import FreeTypeFont, ImageFont, load_default, truetype
 
 faker = Faker()
 
@@ -10,13 +12,16 @@ FONT_PATH = "/System/Library/Fonts/Supplemental/Arial.ttf"
 FONT_SIZE = 16
 FONT_SIZE_SMALL = 12
 
+font: Union[FreeTypeFont, ImageFont]
+font_small: Union[FreeTypeFont, ImageFont]
+
 try:
-    font = ImageFont.truetype(FONT_PATH, FONT_SIZE)
-    font_small = ImageFont.truetype(FONT_PATH, FONT_SIZE_SMALL)
+    font = truetype(FONT_PATH, FONT_SIZE)
+    font_small = truetype(FONT_PATH, FONT_SIZE - 2)
 except OSError:
     print("Custom font not found. Using default font.")
-    font = ImageFont.load_default()
-    font_small = ImageFont.load_default()
+    font = load_default()
+    font_small = load_default()
 
 LICENSE_SIZE = (800, 400)
 BACKGROUND_COLORS = [(240, 240, 240), (200, 255, 255), (255, 228, 225)]

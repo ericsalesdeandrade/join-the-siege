@@ -1,13 +1,10 @@
-import pytest
 import re
-from src.file_io import (
-    allowed_file,
-    extract_text_with_fallback,
-    extract_text_from_pdf,
-    extract_text_from_image,
-    extract_text_from_docx,
-    extract_text_from_excel,
-)
+
+import pytest
+
+from src.file_io import (allowed_file, extract_text_from_docx,
+                         extract_text_from_excel, extract_text_from_image,
+                         extract_text_from_pdf, extract_text_with_fallback)
 
 
 @pytest.mark.fast
