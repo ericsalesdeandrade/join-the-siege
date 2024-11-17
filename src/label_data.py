@@ -1,23 +1,30 @@
-import os
 import json
 import logging
+import os
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
-from src.file_io import extract_text_with_fallback, preprocess_text, allowed_file
+
+from src.file_io import (allowed_file, extract_text_with_fallback,
+                         preprocess_text)
 
 log_dir = "./logs"
 os.makedirs(log_dir, exist_ok=True)
 
-logger = logging.getLogger(__name__)  
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 file_handler = logging.FileHandler(os.path.join(log_dir, "label_data.log"))
-file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+file_handler.setFormatter(
+    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+)
 logger.addHandler(file_handler)
 
 console_handler = logging.StreamHandler()
-console_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+console_handler.setFormatter(
+    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+)
 logger.addHandler(console_handler)
+
 
 def process_file(file_path, label):
     """
@@ -32,7 +39,7 @@ def process_file(file_path, label):
         clean_text = preprocess_text(raw_text)
         logger.info(f"Successfully processed file: {file_path}")
         return (clean_text, label)
-    except Exception as e:
+    except Exception:
         logger.error(f"Error processing file {file_path}", exc_info=True)
         return None
 
@@ -46,11 +53,11 @@ def create_dataset(data_folder):
 
     try:
         with ProcessPoolExecutor() as executor:
-            for label in os.listdir(data_folder):  
+            for label in os.listdir(data_folder):
                 label_path = os.path.join(data_folder, label)
                 if os.path.isdir(label_path):
                     logger.info(f"Processing label: {label}")
-                    for file_name in os.listdir(label_path):  
+                    for file_name in os.listdir(label_path):
                         file_path = os.path.join(label_path, file_name)
                         tasks.append(executor.submit(process_file, file_path, label))
 
@@ -61,7 +68,7 @@ def create_dataset(data_folder):
 
         logger.info("Dataset creation completed.")
         return dataset
-    except Exception as e:
+    except Exception:
         logger.error("Error during dataset creation", exc_info=True)
         return dataset
 
@@ -74,7 +81,7 @@ def save_dataset_to_json(dataset, output_file):
         with open(output_file, "w") as f:
             json.dump(dataset, f, ensure_ascii=False, indent=4)
         logger.info(f"Dataset saved to {output_file}")
-    except Exception as e:
+    except Exception:
         logger.error(f"Error saving dataset to {output_file}", exc_info=True)
 
 

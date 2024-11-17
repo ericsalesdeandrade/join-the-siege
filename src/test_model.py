@@ -1,20 +1,26 @@
-import os
-import joblib
 import logging
+import os
+
+import joblib
+
 from train_model import preprocess_text
 
 log_dir = "./logs"
 os.makedirs(log_dir, exist_ok=True)
 
-logger = logging.getLogger(__name__)  
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 file_handler = logging.FileHandler(os.path.join(log_dir, "test_model.log"))
-file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+file_handler.setFormatter(
+    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+)
 logger.addHandler(file_handler)
 
 console_handler = logging.StreamHandler()
-console_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+console_handler.setFormatter(
+    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+)
 logger.addHandler(console_handler)
 
 try:
@@ -32,15 +38,15 @@ except Exception as e:
 test_cases = [
     {
         "text": "Invoice Number: 12345 for electronics purchase, total $500.",
-        "description": "Invoice-like text"
+        "description": "Invoice-like text",
     },
     {
         "text": "Account Statement: Savings Account XXXX-1234. Balance: $10,000.",
-        "description": "Bank statement-like text"
+        "description": "Bank statement-like text",
     },
     {
         "text": "Driver's License: Name: John Doe, License No: D12345678.",
-        "description": "Driver's license-like text"
+        "description": "Driver's license-like text",
     },
     {
         "text": (
@@ -52,8 +58,8 @@ test_cases = [
             "| 342.94 | 775.6 03/11/2024 | Wire Transfer | 762.79 | 309.95 03/11/2024 | "
             "ACH Payment | 323.09 | 532.34"
         ),
-        "description": "Detailed bank statement-like text"
-    }
+        "description": "Detailed bank statement-like text",
+    },
 ]
 
 logger.info("Testing Classifier on New Inputs\n" + "-" * 40)

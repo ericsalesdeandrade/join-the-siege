@@ -1,9 +1,10 @@
-from faker import Faker
 import os
 import random
-from PIL import Image, ImageDraw, ImageFont
-from docx import Document
+
 import pandas as pd
+from docx import Document
+from faker import Faker
+from PIL import Image, ImageDraw, ImageFont
 
 faker = Faker()
 
@@ -16,9 +17,9 @@ except OSError:
     print("Custom font not found. Using default font.")
     font = ImageFont.load_default()
 
-TEMPLATE_SIZE = (800, 600)  
-BACKGROUND_COLOR = (255, 255, 255)  
-TEXT_COLOR = (0, 0, 0)  
+TEMPLATE_SIZE = (800, 600)
+BACKGROUND_COLOR = (255, 255, 255)
+TEXT_COLOR = (0, 0, 0)
 
 
 def generate_unique_filename(output_dir, base_name, extension):
@@ -35,19 +36,32 @@ def generate_random_transactions():
     """
     transactions = []
     for _ in range(random.randint(10, 20)):
-        date = faker.date_between(start_date="-1y", end_date="today").strftime("%d/%m/%Y")
-        description = random.choice([
-            "Direct Deposit", "POS Purchase", "ATM Withdrawal", "Wire Transfer",
-            "Loan Repayment", "ACH Payment", "Bank Fee", "Check Deposit", "Interest Credit"
-        ])
+        date = faker.date_between(start_date="-1y", end_date="today").strftime(
+            "%d/%m/%Y"
+        )
+        description = random.choice(
+            [
+                "Direct Deposit",
+                "POS Purchase",
+                "ATM Withdrawal",
+                "Wire Transfer",
+                "Loan Repayment",
+                "ACH Payment",
+                "Bank Fee",
+                "Check Deposit",
+                "Interest Credit",
+            ]
+        )
         debit = round(random.uniform(10, 1000), 2) if random.random() < 0.7 else ""
         credit = round(random.uniform(10, 1000), 2) if debit == "" else ""
-        transactions.append({
-            "Date": date,
-            "Description": description,
-            "Debit ($)": debit,
-            "Credit ($)": credit
-        })
+        transactions.append(
+            {
+                "Date": date,
+                "Description": description,
+                "Debit ($)": debit,
+                "Credit ($)": credit,
+            }
+        )
     return transactions
 
 
@@ -59,11 +73,28 @@ def generate_bank_statement_as_pdf(output_dir, transactions):
     image = Image.new("RGB", TEMPLATE_SIZE, color=BACKGROUND_COLOR)
     draw = ImageDraw.Draw(image)
 
-    draw.text((20, 20), f"Bank Name: Bank of {faker.city()}", fill=TEXT_COLOR, font=font)
+    draw.text(
+        (20, 20), f"Bank Name: Bank of {faker.city()}", fill=TEXT_COLOR, font=font
+    )
     draw.text((20, 50), f"Account Holder: {faker.name()}", fill=TEXT_COLOR, font=font)
-    draw.text((20, 80), f"Account Number: XXXX-XXXX-XXXX-{random.randint(1000, 9999)}", fill=TEXT_COLOR, font=font)
-    draw.text((20, 110), f"Statement Period: {faker.date_this_month().strftime('%B %Y')}", fill=TEXT_COLOR, font=font)
-    draw.text((20, 150), "Date | Description | Debit ($) | Credit ($)", fill=TEXT_COLOR, font=font)
+    draw.text(
+        (20, 80),
+        f"Account Number: XXXX-XXXX-XXXX-{random.randint(1000, 9999)}",
+        fill=TEXT_COLOR,
+        font=font,
+    )
+    draw.text(
+        (20, 110),
+        f"Statement Period: {faker.date_this_month().strftime('%B %Y')}",
+        fill=TEXT_COLOR,
+        font=font,
+    )
+    draw.text(
+        (20, 150),
+        "Date | Description | Debit ($) | Credit ($)",
+        fill=TEXT_COLOR,
+        font=font,
+    )
 
     y_offset = 180
     for transaction in transactions:

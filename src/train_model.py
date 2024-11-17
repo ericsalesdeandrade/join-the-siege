@@ -1,27 +1,33 @@
-import os
 import json
-import re
 import logging
-import joblib
+import os
+import re
 from collections import Counter
-from sklearn.model_selection import train_test_split
+
+import joblib
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
+from sklearn.model_selection import train_test_split
 
 log_dir = "./logs"
 os.makedirs(log_dir, exist_ok=True)
 
-logger = logging.getLogger(__name__)  
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 file_handler = logging.FileHandler(os.path.join(log_dir, "train_model.log"))
-file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+file_handler.setFormatter(
+    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+)
 logger.addHandler(file_handler)
 
 console_handler = logging.StreamHandler()
-console_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+console_handler.setFormatter(
+    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+)
 logger.addHandler(console_handler)
+
 
 def load_dataset(file_path):
     """
@@ -62,7 +68,7 @@ def split_dataset(texts, labels):
         )
         logger.info("Dataset split into training, validation, and test sets.")
         return X_train, X_val, X_test, y_train, y_val, y_test
-    except Exception as e:
+    except Exception:
         logger.error("Error splitting the dataset.", exc_info=True)
         raise
 
@@ -72,11 +78,13 @@ def train_classifier(X_train, y_train):
     Trains a logistic regression classifier and returns the model.
     """
     try:
-        model = LogisticRegression(max_iter=1000, class_weight="balanced", random_state=42)
+        model = LogisticRegression(
+            max_iter=1000, class_weight="balanced", random_state=42
+        )
         model.fit(X_train, y_train)
         logger.info("Classifier trained successfully.")
         return model
-    except Exception as e:
+    except Exception:
         logger.error("Error training the classifier.", exc_info=True)
         raise
 
@@ -87,13 +95,17 @@ def evaluate_model(model, X, y, dataset_name):
     """
     try:
         y_pred = model.predict(X)
-        logger.info(f"\n{dataset_name} Set Results:\n{classification_report(y, y_pred)}")
-    except Exception as e:
-        logger.error(f"Error evaluating the model on {dataset_name} set.", exc_info=True)
+        logger.info(
+            f"\n{dataset_name} Set Results:\n{classification_report(y, y_pred)}"
+        )
+    except Exception:
+        logger.error(
+            f"Error evaluating the model on {dataset_name} set.", exc_info=True
+        )
         raise
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         dataset_path = "dataset.json"
         dataset = load_dataset(dataset_path)
@@ -105,7 +117,9 @@ if __name__ == '__main__':
 
         X_train, X_val, X_test, y_train, y_val, y_test = split_dataset(texts, labels)
 
-        vectorizer = TfidfVectorizer(max_features=5000, ngram_range=(1, 4), stop_words=None)
+        vectorizer = TfidfVectorizer(
+            max_features=5000, ngram_range=(1, 4), stop_words=None
+        )
         X_train_tfidf = vectorizer.fit_transform(X_train)
         X_val_tfidf = vectorizer.transform(X_val)
         X_test_tfidf = vectorizer.transform(X_test)
@@ -137,5 +151,5 @@ if __name__ == '__main__':
                 logger.info(f"  {label}: {prob:.2f}")
             logger.info("-" * 40)
 
-    except Exception as e:
+    except Exception:
         logger.error("An error occurred during training.", exc_info=True)

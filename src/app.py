@@ -1,25 +1,31 @@
-import os
 import logging
-from flask import Flask, request, jsonify
+import os
+
 import joblib
+from flask import Flask, jsonify, request
+
 from src.classifier import classify_document
 from src.file_io import allowed_file
 
 log_dir = "./logs"
 os.makedirs(log_dir, exist_ok=True)
 
-logger = logging.getLogger(__name__)  
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 file_handler = logging.FileHandler(os.path.join(log_dir, "app.log"))
-file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+file_handler.setFormatter(
+    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+)
 logger.addHandler(file_handler)
 
 console_handler = logging.StreamHandler()
-console_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+console_handler.setFormatter(
+    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+)
 logger.addHandler(console_handler)
 
-flask_logger = logging.getLogger("werkzeug")  
+flask_logger = logging.getLogger("werkzeug")
 flask_logger.setLevel(logging.DEBUG)
 flask_logger.addHandler(file_handler)
 
@@ -31,11 +37,12 @@ try:
     model = joblib.load("./src/models/text_classifier.pkl")
     vectorizer = joblib.load("./src/models/tfidf_vectorizer.pkl")
     logger.info("Model and vectorizer loaded successfully.")
-except Exception as e:
+except Exception:
     logger.error("Error loading model or vectorizer", exc_info=True)
     raise
 
-@app.route('/classify_file', methods=['POST'])
+
+@app.route("/classify_file", methods=["POST"])
 def classify_file_route():
     """
     Route to classify an uploaded file.
@@ -44,13 +51,13 @@ def classify_file_route():
         JSON response with the predicted class or error message.
     """
     try:
-        if 'file' not in request.files:
+        if "file" not in request.files:
             logger.warning("No file part in the request")
             return jsonify({"error": "No file part in the request"}), 400
 
-        file = request.files['file']
+        file = request.files["file"]
 
-        if file.filename == '':
+        if file.filename == "":
             logger.warning("No selected file")
             return jsonify({"error": "No selected file"}), 400
 
@@ -64,9 +71,10 @@ def classify_file_route():
 
         return jsonify({"file_class": file_class}), 200
 
-    except Exception as e:
+    except Exception:
         logger.error("Error during file classification", exc_info=True)
         return jsonify({"error": "An error occurred during classification"}), 500
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app.run(debug=True)

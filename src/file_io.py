@@ -1,58 +1,70 @@
-import fitz  # PyMuPDF
-from PIL import Image
-import pytesseract
-import re
-import os
-from docx import Document
-import pandas as pd
 import logging
+import os
+import re
+
+import fitz  # PyMuPDF
+import pandas as pd
+import pytesseract
+from docx import Document
+from PIL import Image
 
 log_dir = "./logs"
 os.makedirs(log_dir, exist_ok=True)
 
-logger = logging.getLogger(__name__)  
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 file_handler = logging.FileHandler(os.path.join(log_dir, "file_io.log"))
-file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+file_handler.setFormatter(
+    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+)
 logger.addHandler(file_handler)
 
 console_handler = logging.StreamHandler()
-console_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+console_handler.setFormatter(
+    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+)
 logger.addHandler(console_handler)
 
-ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'docx', 'xlsx'}
+ALLOWED_EXTENSIONS = {"pdf", "png", "jpg", "docx", "xlsx"}
+
 
 def allowed_file(filename):
     """
     Checks if a file has an allowed extension.
     """
-    result = '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    result = (
+        "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+    )
     logger.debug(f"Allowed file check for {filename}: {result}")
     return result
+
 
 def extract_text_with_fallback(file_path):
     """
     Extracts text from a file, handling PDFs, images, Word, and Excel files.
     """
-    file_path = str(file_path)  
-    file_extension = file_path.rsplit('.', 1)[-1].lower()
+    file_path = str(file_path)
+    file_extension = file_path.rsplit(".", 1)[-1].lower()
     logger.info(f"Extracting text from file: {file_path} (Extension: {file_extension})")
 
     try:
-        if file_extension == 'pdf':
+        if file_extension == "pdf":
             return extract_text_from_pdf(file_path)
-        elif file_extension in {'png', 'jpg'}:
+        elif file_extension in {"png", "jpg"}:
             return extract_text_from_image(file_path)
-        elif file_extension == 'docx':
+        elif file_extension == "docx":
             return extract_text_from_docx(file_path)
-        elif file_extension == 'xlsx':
+        elif file_extension == "xlsx":
             return extract_text_from_excel(file_path)
         else:
             raise ValueError(f"Unsupported file extension: {file_extension}")
     except Exception as e:
-        logger.error(f"Error during text extraction for {file_path}: {e}", exc_info=True)
+        logger.error(
+            f"Error during text extraction for {file_path}: {e}", exc_info=True
+        )
         return ""
+
 
 def extract_text_from_pdf(file_path):
     """
@@ -66,7 +78,9 @@ def extract_text_from_pdf(file_path):
                 if page_text.strip():
                     text += page_text
                 else:
-                    logger.warning(f"Page text empty for file {file_path}, attempting OCR.")
+                    logger.warning(
+                        f"Page text empty for file {file_path}, attempting OCR."
+                    )
                     pix = page.get_pixmap()
                     image = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
                     text += pytesseract.image_to_string(image, config="--psm 6")
@@ -75,6 +89,7 @@ def extract_text_from_pdf(file_path):
     except Exception as e:
         logger.error(f"Error extracting text from PDF {file_path}: {e}", exc_info=True)
         return ""
+
 
 def extract_text_from_image(file_path):
     """
@@ -86,8 +101,11 @@ def extract_text_from_image(file_path):
         logger.info(f"Text successfully extracted from image: {file_path}")
         return text.strip()
     except Exception as e:
-        logger.error(f"Error extracting text from image {file_path}: {e}", exc_info=True)
+        logger.error(
+            f"Error extracting text from image {file_path}: {e}", exc_info=True
+        )
         return ""
+
 
 def extract_text_from_docx(file_path):
     """
@@ -99,8 +117,11 @@ def extract_text_from_docx(file_path):
         logger.info(f"Text successfully extracted from Word document: {file_path}")
         return text.strip()
     except Exception as e:
-        logger.error(f"Error extracting text from Word document {file_path}: {e}", exc_info=True)
+        logger.error(
+            f"Error extracting text from Word document {file_path}: {e}", exc_info=True
+        )
         return ""
+
 
 def extract_text_from_excel(file_path):
     """
@@ -116,8 +137,11 @@ def extract_text_from_excel(file_path):
         logger.info(f"Text successfully extracted from Excel file: {file_path}")
         return text.strip()
     except Exception as e:
-        logger.error(f"Error extracting text from Excel file {file_path}: {e}", exc_info=True)
+        logger.error(
+            f"Error extracting text from Excel file {file_path}: {e}", exc_info=True
+        )
         return ""
+
 
 def preprocess_text(text):
     """

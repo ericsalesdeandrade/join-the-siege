@@ -1,13 +1,14 @@
 import os
-from PIL import Image, ImageDraw, ImageFont
-from faker import Faker
 import random
-from docx import Document
+
 import pandas as pd
+from docx import Document
+from faker import Faker
+from PIL import Image, ImageDraw, ImageFont
 
 faker = Faker()
 
-FONT_PATH = "/System/Library/Fonts/Supplemental/Arial.ttf" 
+FONT_PATH = "/System/Library/Fonts/Supplemental/Arial.ttf"
 FONT_SIZE = 14
 
 try:
@@ -16,9 +17,9 @@ except OSError:
     print("Custom font not found. Using default font.")
     font = ImageFont.load_default()
 
-TEMPLATE_SIZE = (800, 600)  
-BACKGROUND_COLOR = (255, 255, 255)  
-TEXT_COLOR = (0, 0, 0)  
+TEMPLATE_SIZE = (800, 600)
+BACKGROUND_COLOR = (255, 255, 255)
+TEXT_COLOR = (0, 0, 0)
 
 
 def generate_unique_filename(output_dir, base_name, extension):
@@ -35,19 +36,30 @@ def generate_random_invoice_items():
     """
     items = []
     for _ in range(random.randint(3, 10)):
-        description = random.choice([
-            "Laptop", "Monitor", "Keyboard", "Mouse", "Desk Chair", 
-            "External Hard Drive", "Headphones", "Webcam", "Printer"
-        ])
+        description = random.choice(
+            [
+                "Laptop",
+                "Monitor",
+                "Keyboard",
+                "Mouse",
+                "Desk Chair",
+                "External Hard Drive",
+                "Headphones",
+                "Webcam",
+                "Printer",
+            ]
+        )
         quantity = random.randint(1, 5)
         unit_price = round(random.uniform(50, 500), 2)
         total_price = round(quantity * unit_price, 2)
-        items.append({
-            "Description": description,
-            "Quantity": quantity,
-            "Unit Price": unit_price,
-            "Total": total_price
-        })
+        items.append(
+            {
+                "Description": description,
+                "Quantity": quantity,
+                "Unit Price": unit_price,
+                "Total": total_price,
+            }
+        )
     return items
 
 
@@ -56,7 +68,7 @@ def calculate_invoice_totals(items):
     Calculate subtotals, tax, and grand total.
     """
     subtotal = sum(item["Total"] for item in items)
-    tax = round(subtotal * 0.1, 2)  
+    tax = round(subtotal * 0.1, 2)
     total = round(subtotal + tax, 2)
     return subtotal, tax, total
 
@@ -69,22 +81,58 @@ def generate_invoice_as_pdf(output_dir, invoice_data):
     image = Image.new("RGB", TEMPLATE_SIZE, color=BACKGROUND_COLOR)
     draw = ImageDraw.Draw(image)
 
-    draw.text((20, 20), f"Invoice Number: {invoice_data['Invoice Number']}", fill=TEXT_COLOR, font=font)
+    draw.text(
+        (20, 20),
+        f"Invoice Number: {invoice_data['Invoice Number']}",
+        fill=TEXT_COLOR,
+        font=font,
+    )
     draw.text((20, 50), f"Date: {invoice_data['Date']}", fill=TEXT_COLOR, font=font)
-    draw.text((20, 80), f"Company: {invoice_data['Company']}", fill=TEXT_COLOR, font=font)
-    draw.text((20, 110), f"Customer: {invoice_data['Customer']}", fill=TEXT_COLOR, font=font)
-    draw.text((20, 140), f"Address: {invoice_data['Address']}", fill=TEXT_COLOR, font=font)
+    draw.text(
+        (20, 80), f"Company: {invoice_data['Company']}", fill=TEXT_COLOR, font=font
+    )
+    draw.text(
+        (20, 110), f"Customer: {invoice_data['Customer']}", fill=TEXT_COLOR, font=font
+    )
+    draw.text(
+        (20, 140), f"Address: {invoice_data['Address']}", fill=TEXT_COLOR, font=font
+    )
 
     y_offset = 180
-    draw.text((20, y_offset), "Description | Quantity | Unit Price | Total", fill=TEXT_COLOR, font=font)
+    draw.text(
+        (20, y_offset),
+        "Description | Quantity | Unit Price | Total",
+        fill=TEXT_COLOR,
+        font=font,
+    )
     y_offset += 20
     for item in invoice_data["Items"]:
-        draw.text((20, y_offset), f"{item['Description']} | {item['Quantity']} | ${item['Unit Price']:.2f} | ${item['Total']:.2f}", fill=TEXT_COLOR, font=font)
+        draw.text(
+            (20, y_offset),
+            f"{item['Description']} | {item['Quantity']} | ${item['Unit Price']:.2f} | ${item['Total']:.2f}",
+            fill=TEXT_COLOR,
+            font=font,
+        )
         y_offset += 20
 
-    draw.text((20, y_offset + 20), f"Subtotal: ${invoice_data['Subtotal']:.2f}", fill=TEXT_COLOR, font=font)
-    draw.text((20, y_offset + 40), f"Tax (10%): ${invoice_data['Tax']:.2f}", fill=TEXT_COLOR, font=font)
-    draw.text((20, y_offset + 60), f"Total: ${invoice_data['Total']:.2f}", fill=TEXT_COLOR, font=font)
+    draw.text(
+        (20, y_offset + 20),
+        f"Subtotal: ${invoice_data['Subtotal']:.2f}",
+        fill=TEXT_COLOR,
+        font=font,
+    )
+    draw.text(
+        (20, y_offset + 40),
+        f"Tax (10%): ${invoice_data['Tax']:.2f}",
+        fill=TEXT_COLOR,
+        font=font,
+    )
+    draw.text(
+        (20, y_offset + 60),
+        f"Total: ${invoice_data['Total']:.2f}",
+        fill=TEXT_COLOR,
+        font=font,
+    )
 
     pdf_file_path = generate_unique_filename(output_dir, "invoice", "pdf")
     image.save(pdf_file_path, format="PDF")
@@ -148,14 +196,16 @@ def generate_synthetic_invoices(output_dir, format_type, count=10):
         subtotal, tax, total = calculate_invoice_totals(items)
         invoice_data = {
             "Invoice Number": f"INV-{random.randint(1000, 9999)}",
-            "Date": faker.date_between(start_date="-1y", end_date="today").strftime("%m/%d/%Y"),
+            "Date": faker.date_between(start_date="-1y", end_date="today").strftime(
+                "%m/%d/%Y"
+            ),
             "Company": faker.company(),
             "Customer": faker.name(),
             "Address": faker.address().replace("\n", ", "),
             "Items": items,
             "Subtotal": subtotal,
             "Tax": tax,
-            "Total": total
+            "Total": total,
         }
 
         if format_type == "pdf":

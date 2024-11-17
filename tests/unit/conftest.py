@@ -4,6 +4,7 @@ from docx import Document
 import pandas as pd
 from PIL import Image, ImageDraw
 
+
 @pytest.fixture
 def temp_pdf(tmp_path):
     pdf_path = tmp_path / "test.pdf"
@@ -12,6 +13,7 @@ def temp_pdf(tmp_path):
         page.insert_text((72, 72), "Sample Text")  # Insert some text
         pdf.save(pdf_path)
     return pdf_path
+
 
 @pytest.fixture
 def temp_image(tmp_path):
@@ -31,6 +33,7 @@ def temp_docx(tmp_path):
     doc.add_paragraph("This is a test document.")
     doc.save(docx_path)
     return docx_path
+
 
 @pytest.fixture
 def temp_excel(tmp_path):
